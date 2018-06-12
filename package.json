@@ -13,6 +13,7 @@
     "chalk": "^2.4.1",
     "commander": "^2.15.1",
     "css": "^2.2.3",
-    "puppeteer": "^1.4.0"
+    "puppeteer": "^1.4.0",
+    "source-map": "^0.7.3"
   }
 }
