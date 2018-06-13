@@ -5,16 +5,23 @@ const program = require('commander');
 const pkg = require('../package.json');
 
 program.version(pkg.version)
-        .usage('[option]')
-        .option('-s, --stylesheet <>',,)
-        .option('-m, --sourcemap <>',,)
-        .option('-')
+        .usage('[option(s)]')
+        .option('-s, --stylesheet <css file>', 'css file which to process against the links')
+        .option('-m, --sourcemap <sourcemap file>', 'sourcemap file to enable showing the ')
+        .option('-l --links <links csv file>', 'file with all links to check')
+        .option('-o --output <output json file>', 'json file to write the results to')
         .parse(process.argv);
 
-if (!program.args.length) {
+if(!program.links || !program.stylesheet) {
   program.help();
   process.exit(1);
 }
 
-console.log('bla');
-unused.init(program.args, options);
+const options = {
+  stylesheet: program.stylesheet,
+  sourcemap: program.sourcemap,
+  links: program.links,
+  output: program.output
+};
+
+unused(options);

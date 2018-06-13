@@ -1,4 +1,4 @@
-{
+[{
       "selector": ".underlinedTextOnHover:hover, .martha-testing .ccb-wrapper .ccb-question-content a:hover, .martha-testing .ftq-block-wrapper .ftq-block-text a:hover, .martha-testing .ftq-block-wrapper .ftq-block-index a:hover, .carousel-block .panel .carousel-wrapper .carousel-item a:hover, .carousel-block .martha-testing .ratings-reviews-panel .carousel-wrapper .carousel-item a:hover, .martha-testing .carousel-block .ratings-reviews-panel .carousel-wrapper .carousel-item a:hover, .lig-content a:hover, .pc-sbs-block-content a:hover, .tib-content a:hover",
       "source": "../../CTM.Web/assets/responsive2015/sass/framework/mixins-n-variables/_common-classes.scss",
       "line": 1,
@@ -12087,4 +12087,4 @@
       "source": "../../CTM.Web/assets/responsive2015/sass/martha/controls/_simples-guide.scss",
       "line": 30,
       "column": 8
-    },
+    },]

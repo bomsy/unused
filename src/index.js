@@ -8,11 +8,8 @@ let browser = null;
 let links = null;
 let consumer = null;
 
-const stylesheet = 'https://cdn.comparethemarket.com/market/assets/responsive2015/sass/styles__243997a82c6317c8e36f126f9fb1e638.css';
-const localStylesheet = './test/styles.css';
-const sourcemapfile = './test/styles.css.map';
-const filepath = './unused-selectors.txt';
-const linksfile = './test/links.csv';
+let stylesheet, sourcemapfile, linksfile;
+let outputfile = './default.json';
 
 function findSelectors(stylesheet) {
   let selectors = [];
@@ -29,11 +26,11 @@ function removeInvalidText(content) {
 }
 
 function writeToFile(content) {
-  fs.writeFile(filepath, content, err => {
+  fs.writeFile(outputfile, content, err => {
     if(err) {
       console.log(chalk.red(err))
     }
-    console.log(chalk.green(filepath + ' written successfully.'))
+    console.log(chalk.green(outputfile + ' written successfully.'))
   });
 }
 
@@ -52,7 +49,9 @@ async function findUnusedSelectors(page, selectors) {
     }, selector).then(result => isUsed = result, () => isUsed = false);
 
     if (!isUsed) {
-      sel.original = consumer.originalPositionFor(sel.position.start);
+      if (consumer !== null) {
+        sel.original = consumer.originalPositionFor(sel.position.start);
+      }
       unused.push(sel);
     }
   }
@@ -84,20 +83,27 @@ async function getCssText(stylesheet, browser) {
   }
 }
 
-async function init() {
+async function init(options) {
+  stylesheet = options.stylesheet;
+  sourcemapfile = options.sourcemap;
+  linksfile = options.links;
+  outputfile = options.output || outputfile;
+  
   browser = await puppeteer.launch();
-  const cssText = await getCssText(localStylesheet, browser);
+  const cssText = await getCssText(stylesheet, browser);
 
   // parse the css text
   const cssAst = css.parse(cssText);
   const cssSelectors = findSelectors(cssAst.stylesheet);
 
-  //parse the sourceMap
-  const rawSourceMap = fs.readFileSync(sourcemapfile, 'utf8');
-  if (typeof rawSourceMap  !== 'string') {
-    console.error(chalk.red(rawSourceMap));
+  //parse the Map
+  if (sourcemapfile) {
+    const rawSourceMap = fs.readFileSync(sourcemapfile, 'utf8');
+    if (typeof rawSourceMap  !== 'string') {
+      console.error(chalk.red(rawSourceMap));
+    }
+    consumer = await new sourceMap.SourceMapConsumer(rawSourceMap);
   }
-  consumer = await new sourceMap.SourceMapConsumer(rawSourceMap);
 
   let unusedSelectors = cssSelectors;
   console.log('no of unused css before > ', cssSelectors.length);
@@ -118,6 +124,9 @@ async function init() {
   }
   const unusedSelectorsText = unusedSelectors.map(selector => {
     const original = selector.original;
+    if (original == undefined) {
+      return `{ selector": "${selector.selector}" },`;
+    }
     return `{
       "selector": "${selector.selector}",
       "source": "${original.source}",
@@ -125,9 +134,13 @@ async function init() {
       "column": ${original.column}
     },`;
   }).join('\n');
-  writeToFile(unusedSelectorsText);
+
+  writeToFile(`[${unusedSelectorsText}]`);
+
+  if (consumer) {
+    consumer.destroy();
+  }
   await browser.close();
-  consumer.destroy();
 }
 
-module.exports =  { init }
+module.exports = init
