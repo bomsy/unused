@@ -1,0 +1,20 @@
+#!/usr/bin/env node
+
+const unused = require('../src/index');
+const program = require('commander');
+const pkg = require('../package.json');
+
+program.version(pkg.version)
+        .usage('[option]')
+        .option('-s, --stylesheet <>',,)
+        .option('-m, --sourcemap <>',,)
+        .option('-')
+        .parse(process.argv);
+
+if (!program.args.length) {
+  program.help();
+  process.exit(1);
+}
+
+console.log('bla');
+unused.init(program.args, options);

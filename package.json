@@ -1,13 +1,13 @@
 {
-  "name": "cleancss",
+  "name": "unused",
   "version": "1.0.0",
-  "description": "get unused css selectors",
-  "main": "index.js",
+  "description": "find unused css selectors",
+  "main": "src/index.js",
   "author": "hubert manilla / zoe hopkins",
   "license": "MIT",
   "private": null,
   "bin": {
-    "cleancss": "./bin/cleancss.js"
+    "unused": "./bin/unused"
   },
   "dependencies": {
     "chalk": "^2.4.1",

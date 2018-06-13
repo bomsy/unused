@@ -126,10 +126,8 @@ async function init() {
     },`;
   }).join('\n');
   writeToFile(unusedSelectorsText);
-}
-
-(async () => {
-  await init();
   await browser.close();
   consumer.destroy();
-})();
+}
+
+module.exports =  { init }
